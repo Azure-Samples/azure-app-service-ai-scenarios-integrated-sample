@@ -1,6 +1,7 @@
 # AIPlaygroundCode exclusions - only exclude log files and cache
 AIPlaygroundCode/__pycache__/
 AIPlaygroundCode/*.log
+AIPlaygroundCode/uploads/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

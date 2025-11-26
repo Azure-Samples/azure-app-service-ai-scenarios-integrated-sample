@@ -19,4 +19,4 @@ openai>=1.35.13
 python-dotenv>=1.0.1
 
 # Production server (optional - for deployment)
-gunicorn==21.2.0
+gunicorn==22.0.0

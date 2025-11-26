@@ -1,4 +1,4 @@
-# Azure AI Scenarios - Sample Application for App Service
+# Azure App Service AI Scenarios: Complete Sample with AI Foundry Integration
 
 This sample application demonstrates how to implement various AI scenarios on Azure App Service using Azure AI Foundry. It provides production-ready code that you can integrate into your existing Flask applications by copying the `AIPlaygroundCode` package and following the integration steps.
 

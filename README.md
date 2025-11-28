@@ -21,6 +21,7 @@ This sample application demonstrates how to implement various AI scenarios on Az
 - **Optional**: [Azure AI Foundry](https://ai.azure.com) access with existing model deployments if you want to use existing endpoints:
   - **Chat/Reasoning/Image model**: `gpt-4o-mini` or similar for conversational AI, reasoning, and image analysis
   - **Audio model**: `gpt-4o-mini-audio-preview` or similar for audio transcription and processing
+  - **Model Compatibility**: Use recommended models (`gpt-4o-mini`, `gpt-35-turbo`) to avoid deployment errors. Advanced models like `gpt-4o` may not be available in all regions
 
 ### One-Command Deployment
 
@@ -31,19 +32,38 @@ This sample application demonstrates how to implement various AI scenarios on Az
    azd up
    ```
    
-   **During deployment, you'll be prompted for:**
-   - **Azure subscription**: Select your target subscription
-   - **Azure region**: Choose deployment region (e.g., East US, West Europe)
-   - **Environment name**: Unique name for your deployment (e.g., "myai-demo")
-   - **Existing Azure AI Foundry endpoint**: Answer "existing" or "new" based on your setup
-   - **AI Resources Location**: Choose the region for Azure AI Foundry resources (may differ from main deployment region for model availability)
+### What to Expect During Deployment
+
+   When you run `azd up`, you'll see these prompts:
+
+   1. `Enter a unique environment name:` → `myai-demo`
+
+   2. **Subscription Selection** → Use arrow keys to select
+
+   3. **Resource Group** → Create new or use existing
+
+   4. `Select a location to create the resource group in:` e.g. `East US`
+
+   5. `Choose new (create AI services) or existing [new/existing]:` e.g. `existing`
+
+   6. `Enter your project endpoint URL:` e.g. `https://your-project.services.ai.azure.com/models`
+
+   7. `Enter your deployment name (gpt-4o-mini, gpt-4, gpt-35-turbo):` e.g. `gpt-4o-mini`
+
+   8. `Enter your audio deployment name (gpt-4o-mini-audio-preview):` e.g. `gpt-4o-mini-audio-preview`
+
+   9. `Select an Azure location to use:` e.g. `East US`
+
+   **Automatic steps**: Package building, RBAC setup, provisioning, deployment
+
+   **Expected deployment time**: 4-5 minutes for complete provisioning and deployment
 
 2. **Azure AI Foundry Integration During Deployment**
    During `azd up`, you'll be prompted to configure AI setup:
    
    **Prompt: "Do you have an existing Azure AI Foundry endpoint?"**
    - **Answer "existing"**: If you have existing Azure AI Foundry resources
-     - You'll be asked to provide your endpoint URL (e.g., `https://myproject-abc123.eastus.models.ai.azure.com/models`)
+     - You'll be asked to provide your endpoint URL (e.g., `https://your-project.services.ai.azure.com/models`)
      - Managed Identity role permissions will be automatically configured on your endpoint
      - You'll specify your existing model deployment names (chat model name e.g. gpt-4o-mini and audio model name e.g. gpt-4o-mini-audio-preview)
    - **Answer "new"**: Creates new Azure AI Foundry resources automatically
@@ -76,12 +96,18 @@ This sample application demonstrates how to implement various AI scenarios on Az
 ## Local Development Setup
 
 ### Prerequisites
-- Python 3.8+ 
-- [Azure AI Foundry](https://ai.azure.com) access with model deployments (you can create new ones using `azd up` or use existing ones):
-  - **Chat/Reasoning/Image model**: `gpt-4o-mini` or similar for conversational AI, reasoning, and image analysis
-  - **Audio model**: `gpt-4o-mini-audio-preview` or similar for audio transcription and processing
 
-### Installation & Setup
+- **Python 3.8+** 
+  - Check version: `python --version`
+  - Download from: https://python.org/downloads/
+- **Azure AI Foundry** with deployed models
+  - 📖 **Setup Guide**: [Create and deploy models in Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-projects)
+  - **Required models**: `gpt-4o-mini` (chat/reasoning/image) and `gpt-4o-mini-audio-preview` (audio)
+  - *Alternative: Use `azd up` deployment method above for automatic setup*
+
+### Step-by-Step Installation & Setup
+
+#### Step 1: Install and Launch Application
 
 1. **Install Dependencies**
    ```bash
@@ -93,42 +119,97 @@ This sample application demonstrates how to implement various AI scenarios on Az
    python app.py
    ```
 
-3. **Configure AI Settings**
-   Open http://localhost:5000/settings and configure:
-   - **Azure AI Foundry Endpoint**: `https://your-project-name.region.models.ai.azure.com/models`
+3. **Verify Application is Running**
+   - Open http://localhost:5000 in your browser
+   - You should see the application homepage
+
+#### Step 2: Configure AI Settings
+
+1. **Open Settings Page**
+   - Navigate to http://localhost:5000/settings
+
+2. **Fill in Configuration Fields**
+   - **Azure AI Foundry Endpoint**: `https://your-project.services.ai.azure.com/models`
    - **API Key**: Your Azure AI Foundry API key *(Note: For production deployment, Managed Identity is automatically configured)*
    - **Chat Model Name**: Your deployed chat model name (e.g., `gpt-4o-mini`)
    - **Audio Model Name**: Your audio model deployment (e.g., `gpt-4o-mini-audio-preview`)
 
-4. **Test Your Application**
-   - Click "🧪 Test Config" to verify connection, then start using AI scenarios!
-   - Refer to Usage Examples section below to test manually with sample scenarios
+3. **Save and Test Configuration**
+   - Click **Save** to store your settings
+   - Click **"🧪 Test Config"** to verify connection
+   - Wait for success confirmation message
 
-## Usage Examples
+#### Step 3: Test Core Features
+
+Refer to the **[Test Core Features](#test-core-features)** section below for detailed testing instructions with sample scenarios.
+
+**✅ Success Indicators:**
+- Configuration test shows success message
+- Application loads at http://localhost:5000
+- Chat interface is accessible and functional
+
+## Test Core Features
 
 *[Screenshot placeholder: Add application screenshot showing the main interface]*
 
-**Getting Started**: Click the floating AI chat button (bottom-right corner) to open the AI chat interface, then try these examples:
+*Note: These tests work for both local development and Azure deployment setups.*
 
-**Conversational AI**: 
-- **Test Message**: "Who are you and what can you help with?"
-- **Expected Response**: AI identifies as Enterprise AI Assistant, explains customer service and business intelligence capabilities
+### Step-by-Step Testing Guide
 
-**Product Inquiry**:
-- **Test Message**: "Tell me about features and price for Pro Gaming X1"
+#### 1. Access Chat Interface
+- Go to http://localhost:5000
+- Click the floating AI chat button (bottom-right corner)
+- Verify the chat popup opens correctly
 
-**Customer Service**:
-- **Test Message**: "What is the return policy and how do I process a customer refund?"
+#### 2. Test Basic Conversational AI
 
-**Multimodal Processing**: 
-- **Image Analysis**: 
-  - **Test Message**: "Analyze this laptop and tell me its specifications"
-  - **Action**: Upload product images from `tests/test_inputs/laptop.jpeg` using the 📎 button
-- **Audio Processing**: 
-  - **Test Message**: "Transcribe this customer service call"
-  - **Action**: Upload audio files from `tests/test_inputs/test_customer_service_audio.mp3` using the 📎 button
+**Test these exact messages** (copy and paste):
 
-**Sample Test Files Available**: Browse `tests/test_inputs/` folder for sample images and audio files to test multimodal capabilities.
+1. **Identity Test**:
+   - **Message**: `"Who are you and what can you help with?"`
+   - **Expected**: AI identifies as Enterprise AI Assistant, explains capabilities
+
+2. **Product Inquiry Test**:
+   - **Message**: `"Tell me about features and price for Pro Gaming X1"`
+   - **Expected**: Relevant product information response
+
+3. **Customer Service Test**:
+   - **Message**: `"What is the return policy and how do I process a customer refund?"`
+   - **Expected**: Helpful customer service guidance
+
+#### 3. Test Multimodal Features
+
+**Image Analysis Testing**:
+1. **Type message**: `"Analyze this laptop and tell me its specifications"`
+2. **Click 📎 button** to upload file
+3. **Select file**: `tests/test_inputs/laptop.jpeg`
+4. **Send message**
+5. **Expected**: AI describes laptop specifications from the image
+
+**Audio Processing Testing**:
+1. **Type message**: `"Transcribe this customer service call"`
+2. **Click 📎 button** to upload file
+3. **Select file**: `tests/test_inputs/test_customer_service_audio.mp3`
+4. **Send message**
+5. **Expected**: AI provides transcription of the audio content
+
+#### 4. Test Advanced Reasoning Capabilities
+
+**Complex Business Analysis Testing**:
+**Message**: `"Zava's sales have dropped 15% this quarter. Walk me through a systematic approach to identify root causes and develop an action plan."`
+**Expected**: Structured analytical approach with step-by-step reasoning process
+
+**✅ Success Indicators:**
+- All chat responses are relevant and helpful
+- Image analysis identifies laptop features accurately
+- Audio transcription provides readable text from audio file
+- Reasoning responses show structured analytical thinking
+- No error messages in chat interface
+- File uploads complete successfully
+- Responses may show truncation message for long content (this is normal)
+- Configuration test shows green success message
+
+**📁 Sample Test Files**: Browse `tests/test_inputs/` folder for additional sample images and audio files to test multimodal capabilities.
 
 ## Integration with Existing Applications
 
@@ -190,7 +271,7 @@ pydub==0.25.1
 ```bash
 # Add Azure AI Foundry configuration as App Service environment variables
 az webapp config appsettings set --name <your-app-name> --resource-group <your-rg> --settings \
-  AZURE_INFERENCE_ENDPOINT="https://your-project-name.region.models.ai.azure.com/models" \
+  AZURE_INFERENCE_ENDPOINT="https://your-project.services.ai.azure.com/models" \
   AZURE_AI_CHAT_DEPLOYMENT_NAME="gpt-4o-mini" \
   AZURE_AI_AUDIO_DEPLOYMENT_NAME="gpt-4o-mini-audio-preview" \
   AZURE_CLIENT_ID="system-assigned-managed-identity"
@@ -286,95 +367,6 @@ Please note that this process may take up to 10 minutes to complete.
 
 ---
 
-## FAQ & Troubleshooting
-
-### **Q: How do I add AI to my existing Flask application?**
-**A:** See the [Integration with Existing Applications](#-integration-with-existing-applications) section above for step-by-step instructions.
-
-### **Q: What Azure AI models are supported?**  
-**A:** All Azure AI Foundry models including chat, reasoning, and multimodal models. Configure your deployed model name in settings.
-
-### **Q: How do I enable multimodal capabilities?**
-**A:** Enable "Multimodal" in `/settings` and ensure your model supports vision/audio (like gpt-4o, phi-4-multimodal). Upload images/audio via the 📎 button.
-
-### **Q: How do I use reasoning model capabilities?**
-**A:** Enable "Reasoning" in `/settings` and use reasoning-capable models. These models provide advanced problem-solving and step-by-step reasoning. Set "Reasoning Effort" to control depth (low/medium/high) and enable "Show Reasoning" to see the thinking process.
-
-### **Q: How do I use structured input/output capabilities?**
-**A:** Enable "Structured Output" in `/settings`, set "Response Format" to "JSON", and define a JSON schema in the "JSON Schema" field. The AI will return responses matching your specified schema structure, perfect for system integration and data processing workflows.
-
-### **Q: Do I need API keys for Azure deployment?**
-**A:** No! When deployed to Azure using `azd up`, the application automatically uses Managed Identity for secure authentication with Azure AI Foundry. API keys are only needed for local development testing.
-
-### **Troubleshooting Common Deployment Issues**
-
-**"Endpoint not found" or 401 Authentication errors:**
-- Verify your Azure AI Foundry endpoint URL format: `https://your-project-name.region.models.ai.azure.com/models`
-- Ensure Managed Identity has proper permissions:
-  - "Cognitive Services OpenAI User" role for model access
-  - "Azure AI Developer" role for project access
-- Use the "🧪 Test Config" button to validate connection
-- Check that your model deployments are active in Azure AI Foundry
-- Verify `AZURE_USE_MANAGED_IDENTITY=true` is set in App Service configuration
-
-**Azure deployment fails with "azd up" command:**
-- Ensure you have Contributor access to your Azure subscription
-- Check if you've reached subscription limits for App Service or AI services
-- Try running `azd auth login` to refresh your authentication
-- Clear previous deployments with `azd down` before retrying
-
-**Application not starting after deployment:**
-- Check App Service logs in Azure portal for detailed errors (under Monitoring > Log stream)
-- Verify Managed Identity permissions are properly configured for Azure AI Foundry resources
-- Ensure all required Azure AI Foundry environment variables are set in App Service Configuration
-- Review deployment logs for any missing dependencies or configuration issues
-- Check that Azure AI Foundry project and model deployments are active
-
-**"ModuleNotFoundError" or dependency issues:**
-- Verify all files from `requirements.txt` were properly deployed
-- Check Python version compatibility (requires Python 3.8+)
-- Review deployment logs in Azure App Service for package installation errors
-
-**File upload failures (multimodal scenarios):**
-- Check file size limits (images: 5MB, audio: 10MB by default)
-- Verify supported file formats (JPEG, PNG for images; MP3, WAV for audio)
-- Ensure "Enable Multimodal" is checked in settings
-- Confirm your model supports multimodal capabilities
-
-### **Integration-Specific Troubleshooting**
-
-**"Managed Identity permissions" errors after integration:**
-- **Cause**: Step 1 (Azure Resources Setup) not completed properly
-- **Symptoms**: 403 Forbidden errors when accessing AI endpoints
-- **Solution**: Verify managed identity roles are assigned correctly using `az role assignment list`
-
-**"AIPlaygroundCode module not found" errors:**
-- **Cause**: Step 2 (Copy and Merge Files) incomplete
-- **Symptoms**: ImportError or ModuleNotFoundError when starting application
-- **Solution**: Ensure `AIPlaygroundCode` folder is copied to your application root and dependencies are merged
-
-**"AZURE_INFERENCE_ENDPOINT not set" configuration errors:**
-- **Cause**: Step 3 (App Service Configuration) not completed
-- **Symptoms**: Configuration errors on `/settings` page, "Test Config" button fails
-- **Solution**: Verify environment variables are set in App Service Configuration blade
-
-**"/settings route not found" (404 errors):**
-- **Cause**: Step 4 (Add AI Routes) not implemented
-- **Symptoms**: 404 Not Found when navigating to `/settings`
-- **Solution**: Add the settings routes to your Flask application and restart
-
-**Chat interface not appearing on pages:**
-- **Cause**: Step 5 (Add AI Interface) not completed properly
-- **Symptoms**: No chat interface visible, JavaScript errors in browser console
-- **Solution**: Copy complete HTML, CSS, and JavaScript from `retail_home.html` to your templates
-
-**"Template not found" errors for settings page:**
-- **Cause**: Templates path not configured correctly
-- **Symptoms**: Jinja2 TemplateNotFound error when accessing `/settings`
-- **Solution**: Ensure Flask can find `AIPlaygroundCode/templates/settings.html` or update template path
-
----
-
 
 
 ## Guidance
@@ -443,6 +435,7 @@ BY ACCESSING OR USING THE SOFTWARE, YOU ACKNOWLEDGE THAT THE SOFTWARE IS NOT DES
 - **[Project Structure](https://github.com/Azure-Samples/azure-app-service-ai-scenarios-integrated-sample/blob/main/docs/PROJECT_STRUCTURE.md)** - Learn the high-level constructs and architecture
 - **[Configuration Guide](https://github.com/Azure-Samples/azure-app-service-ai-scenarios-integrated-sample/blob/main/docs/CONFIGURATION_GUIDE.md)** - Understand configuration options and environment setup
 - **[Testing Guide](https://github.com/Azure-Samples/azure-app-service-ai-scenarios-integrated-sample/blob/main/docs/TESTING_GUIDE.md)** - Learn how to test the application locally and on Azure
+- **[FAQ & Troubleshooting](https://github.com/Azure-Samples/azure-app-service-ai-scenarios-integrated-sample/blob/main/docs/FAQ_and_troubleshooting.md)** - Frequently asked questions and troubleshooting guide
 
 ### **Azure AI Foundry Documentation**
 - **[Chat Completions](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/how-to/use-chat-completions?tabs=python)** - Basic conversational AI implementation
